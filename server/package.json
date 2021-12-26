@@ -14,5 +14,11 @@
     "MySQl"
   ],
   "author": "Adeoye Adefemi OPeoluwa",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "mysql": "^2.18.1"
+  }
 }
