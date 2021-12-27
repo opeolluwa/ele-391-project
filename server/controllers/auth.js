@@ -10,18 +10,18 @@ const uuid = uuidv4();
 //ADD user
 function register(req, res) {
     //fetch data from pay load
-    const { firstname, lastname, email, password } = req.body
+    const { firstname, lastname, username, password } = req.body
 
     //check if user exists
     database.promise()
-        .query("SELECT * FROM user_information WHERE LOWER(email) = ?", [email])
+        .query("SELECT * FROM auth WHERE LOWER(username) = ?", [username])
         .then(([rows, fields]) => {
 
             //add user if not exist
             if (!rows[0]) {
-                database.promise().query("INSERT INTO user_information (user_id, firstname, lastname, email, password)  VALUES (?,?,?,?,?)", [uuid, firstname, lastname, email, hash_password(password)])
+                database.promise().query("INSERT INTO auth (id, firstname, lastname, username, password)  VALUES (?,?,?,?,?)", [uuid, firstname, lastname, username, hash_password(password)])
                     .then(([rows, fields]) => {
-                        return res.send({ message: email + " successfully added" })
+                        return res.send({ message: username + " successfully added" })
                     })
                     .catch(error => console.log(error))
                 // .then(() => database.end());
@@ -29,7 +29,7 @@ function register(req, res) {
 
             //inform user of existence if found
             else {
-                return res.status(409).send({ message: email + " already exists" })
+                return res.status(409).send({ message: username + " already exists" })
             }
         })
         .catch(error => console.log(error))
@@ -43,22 +43,22 @@ function register(req, res) {
 
 //login user return jwt
 function login(req, res) {
-    const { email, user_password } = req.body
+    const { username, user_password } = req.body
 
     //check if user exists
     database.promise()
-        .query("SELECT * FROM user_information WHERE LOWER(email) =?", [email])
+        .query("SELECT * FROM auth WHERE LOWER(username) =?", [username])
         .then(([rows, fields]) => {
 
             //if user is found,  validate data then return data and access token
             if (rows[0]) {
                 //data retrieved from database
-                const { user_id, password, email, firstname } = rows[0];
+                const { user_id, password, username, firstname } = rows[0];
 
                 //compare req.body.user_password with stored hash
                 if (compare_hash(user_password, password)) {
-                    const jwt_token = jwt({ user_id, email, firstname })
-                    return res.send({ user_id, email, firstname, jwt_token })
+                    const jwt_token = jwt({ user_id, username, firstname })
+                    return res.send({ user_id, username, firstname, jwt_token })
                 }
                 //if data does not match
                 if (!compare_hash(user_password, password)) {
@@ -67,7 +67,7 @@ function login(req, res) {
             }
             //user if not found,
             else {
-                return res.send({ message: email + " not found" })
+                return res.send({ message: username + " not found" })
             }
         })
         .catch(error => console.log(error))
