@@ -43,7 +43,7 @@ function register(req, res) {
 
 //login user return jwt
 function login(req, res) {
-    const { username, user_password } = req.body
+    const { username, password } = req.body
 
     //check if user exists
     database.promise()
@@ -53,12 +53,12 @@ function login(req, res) {
             //if user is found,  validate data then return data and access token
             if (rows[0]) {
                 //data retrieved from database
-                const { user_id, password, username, firstname } = rows[0];
+                const { id, password : hash, username, firstname } = rows[0];
 
                 //compare req.body.user_password with stored hash
-                if (compare_hash(user_password, password)) {
-                    const jwt_token = jwt({ user_id, username, firstname })
-                    return res.send({ user_id, username, firstname, jwt_token })
+                if (compare_hash(password, hash)) {
+                    const jwt_token = jwt({ id, username, firstname })
+                    return res.send({ id, username, firstname, jwt_token })
                 }
                 //if data does not match
                 if (!compare_hash(user_password, password)) {
