@@ -1,22 +1,25 @@
 const _ = require('lodash')
 const jwt = require("jsonwebtoken")
 const meta_data = require("./../config/server.config")
+
+
 module.exports = {
     //parse admin data and validate
     validate_admin_login(req, res, next) {
         const { username, password } = req.body
         //username not provided 
         if (!username) {
-            res.status(400).send({ message: _.capitalize("invalid username or password") })
+            res.status(400).send({ message: _.capitalize("username may not be empty") })
         }
 
         if (!password) {
-            res.status(400).send({ message: _.capitalize("invalid username or password") })
+            res.status(400).send({ message: _.capitalize("passsword may not be empty") })
 
         }
         next()
     },
 
+    //validate hardware login
     validate_hardware_login() {
         const { card_id } = req.body;
         if (!card_id) {
@@ -26,6 +29,7 @@ module.exports = {
         next()
     },
 
+    //TODO: complete this 
     validate_token(req, res, next) {
         try {
             //get token fom header
