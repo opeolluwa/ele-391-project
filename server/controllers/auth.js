@@ -5,12 +5,12 @@ const jwt = require("./../utils/jwt")
 const { hash_password, compare_hash } = require("../utils/bcrypt")
 
 //instatiate module
-const uuid = uuidv4();
+// const uuid = uuidv4();
 
 //ADD user
 function register(req, res) {
     //fetch data from pay load
-    const { firstname, lastname, username, password } = req.body
+    const { username, password } = req.body
 
     //check if user exists
     database.promise()
@@ -19,7 +19,7 @@ function register(req, res) {
 
             //add user if not exist
             if (!rows[0]) {
-                database.promise().query("INSERT INTO auth (id, firstname, lastname, username, password)  VALUES (?,?,?,?,?)", [uuid, firstname, lastname, username, hash_password(password)])
+                database.promise().query("INSERT INTO auth (id, username, password)  VALUES (?,?,?)", [uuidv4(),  username, hash_password(password)])
                     .then(([rows, fields]) => {
                         return res.send({ message: username + " successfully added" })
                     })
@@ -35,6 +35,7 @@ function register(req, res) {
         .catch(error => console.log(error))
     //REFACTOR :: fix datase throwing error when connection is closed
     // .then(() => database.end());
+    // database.end()
 }
 
 
@@ -53,12 +54,12 @@ function login(req, res) {
             //if user is found,  validate data then return data and access token
             if (rows[0]) {
                 //data retrieved from database
-                const { id, password : hash, username, firstname } = rows[0];
+                const { id, password : hash, username,  } = rows[0];
 
                 //compare req.body.user_password with stored hash
                 if (compare_hash(password, hash)) {
                     const jwt_token = jwt({ id, username, firstname })
-                    return res.send({ id, username, firstname, jwt_token })
+                    return res.send({ id, username, jwt_token })
                 }
                 //if data does not match
                 if (!compare_hash(user_password, password)) {

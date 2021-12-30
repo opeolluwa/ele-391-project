@@ -7,3 +7,6 @@ const hash_password = (raw_password) => bcrypt.hashSync(raw_password, salt_round
 const compare_hash = (raw_password, hashed_passsword) => bcrypt.compareSync(raw_password, hashed_passsword);
 //export modules
 module.exports = { hash_password, compare_hash };
+
+
+console.log(compare_hash("sandy_moon","$2b$13$Phr7TTbmk9SViAx6ZeZI1eNMtsJkytWhmqsiF7cHuMnzmcB3jKEze"))
