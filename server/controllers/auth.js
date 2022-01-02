@@ -23,7 +23,7 @@ function register(req, res) {
                     .then(([rows, fields]) => {
                         return res.send({ message: username + " successfully added" })
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => res.send({ message: "invalid username or password" }))
                 // .then(() => database.end());
             }
 
