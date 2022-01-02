@@ -4,9 +4,8 @@
   "description": "A school project :: IoT based RFID attendance management system",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
-
+    "dev": "node init && nodemon index.js",
+    "start": "node init && node index.js"
   },
   "keywords": [
     "IoT",
